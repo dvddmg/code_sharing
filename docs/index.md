@@ -1,21 +1,16 @@
-# Welcome to MkDocs
+# spat_plugin
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Plugin audio compilati da patch Pure Data con la toolchain **hvcc + DPF**.
 
-## Commands
+Disponibili come **VST3** e **AU** per macOS (Apple Silicon).
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+---
 
-## Project layout
+Questo sito documenta lo sviluppo di una collezione di plugin audio
+nati come patch Pd e compilati in formati nativi.
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+Ogni post del [blog](blog/index.md) racconta un plugin, una tecnica
+o un problema risolto durante lo sviluppo.
 
-
-
-Questa è una prova, funziona tutto
+[:octicons-arrow-right-16: Vai al blog](blog/index.md){ .md-button }
+[:octicons-download-16: Download](https://github.com/dvddmg/spat_plugin/releases/latest){ .md-button }

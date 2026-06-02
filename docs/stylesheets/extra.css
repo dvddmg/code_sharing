@@ -1,14 +1,3 @@
-/* bottoni download nelle pagine plugin */
-.md-button {
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-/* tabella parametri: colonna nome monospace */
-table td:first-child code {
-  font-size: 0.85em;
-}
-
 /* =============================================
    TEMA GRAYSCALE — spat_plugin
    ============================================= */
