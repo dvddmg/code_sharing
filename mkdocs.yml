@@ -5,19 +5,10 @@ repo_url: https://github.com/dvddmg/code_sharing
 theme:
   name: material
   palette:
-    # bottone per switch light/dark
     - scheme: default
-      primary: blue grey
-      accent: orange
-      toggle:
-        icon: material/brightness-7
-        name: dark
-    - scheme: slate
-      primary: blue grey
-      accent: orange
-      toggle:
-        icon: material/brightness-4
-        name: litgh
+      primary: custom      # ← dice a Material di non applicare i suoi colori
+      accent: custom
+
   features:
     - navigation.tabs           # tabs in alto
     - navigation.sections       # sezioni espanse nella sidebar
