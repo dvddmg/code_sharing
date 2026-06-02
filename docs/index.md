@@ -1,16 +1,78 @@
-# spat_plugin
+# home
 
-Plugin audio compilati da patch Pure Data con la toolchain **hvcc + DPF**.
+Qui si possono trovare esempi di codice, proof of concept o esempi pratici in ambito informatico e musicale.
 
-Disponibili come **VST3** e **AU** per macOS (Apple Silicon).
+L'obbiettivo è quello di condividere idee, progetti e spunti di riflessione sulla tecnologia, senza la pretesa di essere esaustivi o di fornire soluzioni definitive.
 
----
+-----
 
-Questo sito documenta lo sviluppo di una collezione di plugin audio
-nati come patch Pd e compilati in formati nativi.
+Non è un manuale. 
 
-Ogni post del [blog](blog/index.md) racconta un plugin, una tecnica
-o un problema risolto durante lo sviluppo.
+Non è un tutorial. 
 
-[:octicons-arrow-right-16: Vai al blog](blog/index.md){ .md-button }
-[:octicons-download-16: Download](https://github.com/dvddmg/spat_plugin/releases/latest){ .md-button }
+Non è un corso. 
+
+Non è una guida. 
+
+Non è un libro. 
+
+Non è un articolo. 
+
+Non è una recensione. 
+
+Non è una critica. 
+
+Non è una riflessione. 
+
+Non è una teoria. 
+
+Non è una pratica. 
+
+Non è una filosofia. 
+
+Non è una religione. 
+
+Non è una politica. 
+
+Non è una ideologia. 
+
+Non è una cultura. 
+
+Non è una società. 
+
+Non è una storia. 
+
+Non è una geografia. 
+
+Non è una scienza. 
+
+Non è una tecnologia. 
+
+Non è una arte. 
+
+Non è una musica. 
+
+Non è una letteratura. 
+
+Non è una poesia. 
+
+Non è una prosa. 
+
+Non è una narrativa. 
+
+Non è una saggistica. 
+
+Non è una biografia. 
+
+Non è un'autobiografia. 
+
+Non è un memoir. 
+
+Non è un diario. 
+
+Non è un forum. 
+
+Non è una community.
+
+
+Forse è un blog. 

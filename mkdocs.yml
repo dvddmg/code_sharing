@@ -1,4 +1,4 @@
-site_name: code_sharing
+site_name: code sharing
 site_url: https://dvddmg.github.io/code_sharing/
 site_description: Pure Data plugins compiled with hvcc + DPF
 site_author: Davide Bardi
@@ -85,10 +85,9 @@ extra_css:
 # ---------- NAVIGAZIONE ----------
 nav:
   - Home: index.md
-  - Blog:
-    - blog/index.md
+  - Blog: blog/index.md
   - Tag: tags/index.md
-  - Installazione: install.md
+  - About: https://www.davidebardi.com/
 
 extra:
   social:
