@@ -1,0 +1,21 @@
+/* bottoni download nelle pagine plugin */
+.md-button {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* tabella parametri: colonna nome monospace */
+table td:first-child code {
+  font-size: 0.85em;
+}
+
+/* override colori con valori hex
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #001eff;
+  --md-accent-fg-color: #00d515;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #001eff;
+  --md-accent-fg-color: #00d515;
+} */

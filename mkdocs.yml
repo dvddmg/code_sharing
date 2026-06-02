@@ -1,19 +1,72 @@
-site_name: code sharing
+site_name: code_sharing
 site_url: https://dvddmg.github.io/code_sharing/
 repo_url: https://github.com/dvddmg/code_sharing
+
 theme:
   name: material
+  palette:
+    # bottone per switch light/dark
+    - scheme: default
+      primary: blue grey
+      accent: orange
+      toggle:
+        icon: material/brightness-7
+        name: dark
+    - scheme: slate
+      primary: blue grey
+      accent: orange
+      toggle:
+        icon: material/brightness-4
+        name: litgh
   features:
-    - navigation.tabs
-    - content.code.copy
+    - navigation.tabs           # tabs in alto
+    - navigation.sections       # sezioni espanse nella sidebar
+    - navigation.top            # bottone "torna su"
+    - content.code.copy         # bottone copia nei code block
+    - content.tabs.link         # tabs sincronizzati
+  icon:
+    repo: fontawesome/brands/github
+  font:
+    text: IBM Plex Sans
+    code: IBM Plex Mono
 
+# estensioni markdown
 markdown_extensions:
-  - admonition
-  - pymdownx.details
-  - pymdownx.tabbed:
-      alternate_style: true
+  - admonition                  # box note/warning/tip
+  - pymdownx.details            # admonition richiudibili
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:            # tabs nel contenuto
+      alternate_style: true
+  - pymdownx.highlight:         # syntax highlighting
+      anchor_linenums: true
+  - pymdownx.inlinehilite       # inline code highlighting
+  - attr_list                   # attributi su elementi
+  - md_in_html                  # markdown dentro html
+  - tables                      # tabelle
+  - toc:                        # table of contents
+      permalink: true
+
+# css custom
+extra_css:
+  - stylesheets/extra.css
+
+# navigazione esplicita
+nav:
+  - Home: index.md
+  # - Plugins:
+  #   - Panoramica: plugins/index.md
+  #   - spat_8: plugins/spat_8.md
+  #   - fm_synth: plugins/fm_synth.md
+  #   - grain_cloud: plugins/grain_cloud.md
+  #   - logic_gate: plugins/logic_gate.md
+  - Installazione: install.md
+  - Test: test_page.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/dvddmg
