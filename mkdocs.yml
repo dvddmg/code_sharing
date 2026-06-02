@@ -6,8 +6,17 @@ theme:
   name: material
   palette:
     - scheme: default
-      primary: custom      # ← dice a Material di non applicare i suoi colori
+      primary: custom
       accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Passa al tema scuro
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Passa al tema chiaro
 
   features:
     - navigation.tabs           # tabs in alto

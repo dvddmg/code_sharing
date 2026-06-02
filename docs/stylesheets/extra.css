@@ -9,35 +9,167 @@ table td:first-child code {
   font-size: 0.85em;
 }
 
-[data-md-color-scheme="slate"] {
-  /* sfondo */
-  --md-default-bg-color: #0d1117;
-  --md-default-bg-color--light: #161b22;
+/* =============================================
+   TEMA GRAYSCALE — spat_plugin
+   ============================================= */
+
+/* ---------- TEMA CHIARO ---------- */
+[data-md-color-scheme="default"] {
+
+  /* primario: nero */
+  --md-primary-fg-color:         #000000;
+  --md-primary-fg-color--light:  #333333;
+  --md-primary-fg-color--dark:   #000000;
+  --md-primary-bg-color:         #ffffff;
+  --md-primary-bg-color--light:  #ffffffb3;
+
+  /* accent: grigio medio */
+  --md-accent-fg-color:              #666666;
+  --md-accent-fg-color--transparent: #6666661a;
+  --md-accent-bg-color:              #ffffff;
+  --md-accent-bg-color--light:       #ffffffb3;
+
+  /* sfondo pagina */
+  --md-default-bg-color:           #ffffff;
+  --md-default-bg-color--light:    #f5f5f5;
+  --md-default-bg-color--lighter:  #fafafa;
+  --md-default-bg-color--lightest: #eeeeee;
 
   /* testo */
-  --md-default-fg-color: #e6edf3;
-  --md-default-fg-color--light: #8b949e;
-
-  /* primario */
-  --md-primary-fg-color: #1a1a2e;
-  --md-primary-fg-color--light: #2a2a4e;
-  --md-primary-fg-color--dark: #0f0f1e;
-
-  /* accent */
-  --md-accent-fg-color: #e94560;
-
-  /* codice */
-  --md-code-bg-color: #161b22;
-  --md-code-fg-color: #f97583;
-  --md-code-hl-keyword-color: #ff7b72;
-  --md-code-hl-string-color: #a5d6ff;
-  --md-code-hl-comment-color: #8b949e;
-  --md-code-hl-number-color: #79c0ff;
+  --md-default-fg-color:           #000000;
+  --md-default-fg-color--light:    #444444;
+  --md-default-fg-color--lighter:  #888888;
+  --md-default-fg-color--lightest: #bbbbbb;
 
   /* link */
-  --md-typeset-a-color: #58a6ff;
+  --md-typeset-a-color: #333333;
+
+  /* codice */
+  --md-code-bg-color:              #f0f0f0;
+  --md-code-fg-color:              #222222;
+  --md-code-hl-color:              #e0e0e0;
+  --md-code-hl-color--light:       #e0e0e040;
+  --md-code-hl-keyword-color:      #000000;
+  --md-code-hl-string-color:       #555555;
+  --md-code-hl-comment-color:      #999999;
+  --md-code-hl-number-color:       #333333;
+  --md-code-hl-name-color:         #222222;
+  --md-code-hl-operator-color:     #444444;
+  --md-code-hl-punctuation-color:  #666666;
+  --md-code-hl-variable-color:     #333333;
+  --md-code-hl-constant-color:     #111111;
+  --md-code-hl-function-color:     #000000;
+  --md-code-hl-special-color:      #555555;
+
+  /* tabelle */
+  --md-typeset-table-color:        #cccccc;
+  --md-typeset-table-color--light: #f7f7f7;
+
+  /* admonition */
+  --md-admonition-bg-color: #f5f5f5;
+  --md-admonition-fg-color: #000000;
 
   /* footer */
-  --md-footer-bg-color: #0d1117;
-  --md-footer-bg-color--dark: #010409;
+  --md-footer-bg-color:          #111111;
+  --md-footer-bg-color--dark:    #000000;
+  --md-footer-fg-color:          #ffffff;
+  --md-footer-fg-color--light:   #cccccc;
+  --md-footer-fg-color--lighter: #999999;
+}
+
+
+/* ---------- TEMA SCURO ---------- */
+[data-md-color-scheme="slate"] {
+
+  /* primario: nero pieno */
+  --md-primary-fg-color:         #000000;
+  --md-primary-fg-color--light:  #1a1a1a;
+  --md-primary-fg-color--dark:   #000000;
+  --md-primary-bg-color:         #ffffff;
+  --md-primary-bg-color--light:  #ffffffb3;
+
+  /* accent: grigio chiaro */
+  --md-accent-fg-color:              #aaaaaa;
+  --md-accent-fg-color--transparent: #aaaaaa1a;
+  --md-accent-bg-color:              #000000;
+  --md-accent-bg-color--light:       #000000b3;
+
+  /* sfondo pagina: nero */
+  --md-default-bg-color:           #000000;
+  --md-default-bg-color--light:    #0a0a0a;
+  --md-default-bg-color--lighter:  #111111;
+  --md-default-bg-color--lightest: #1a1a1a;
+
+  /* testo: bianco */
+  --md-default-fg-color:           #ffffff;
+  --md-default-fg-color--light:    #cccccc;
+  --md-default-fg-color--lighter:  #888888;
+  --md-default-fg-color--lightest: #555555;
+
+  /* link */
+  --md-typeset-a-color: #cccccc;
+
+  /* codice */
+  --md-code-bg-color:              #111111;
+  --md-code-fg-color:              #dddddd;
+  --md-code-hl-color:              #222222;
+  --md-code-hl-color--light:       #22222240;
+  --md-code-hl-keyword-color:      #ffffff;
+  --md-code-hl-string-color:       #aaaaaa;
+  --md-code-hl-comment-color:      #666666;
+  --md-code-hl-number-color:       #cccccc;
+  --md-code-hl-name-color:         #dddddd;
+  --md-code-hl-operator-color:     #bbbbbb;
+  --md-code-hl-punctuation-color:  #888888;
+  --md-code-hl-variable-color:     #cccccc;
+  --md-code-hl-constant-color:     #eeeeee;
+  --md-code-hl-function-color:     #ffffff;
+  --md-code-hl-special-color:      #aaaaaa;
+
+  /* tabelle */
+  --md-typeset-table-color:        #333333;
+  --md-typeset-table-color--light: #0d0d0d;
+
+  /* admonition */
+  --md-admonition-bg-color: #111111;
+  --md-admonition-fg-color: #ffffff;
+
+  /* footer */
+  --md-footer-bg-color:          #000000;
+  --md-footer-bg-color--dark:    #000000;
+  --md-footer-fg-color:          #ffffff;
+  --md-footer-fg-color--light:   #aaaaaa;
+  --md-footer-fg-color--lighter: #666666;
+}
+
+
+/* ---------- RITOCCHI GLOBALI ---------- */
+
+/* link: sottolineatura sottile al hover */
+.md-typeset a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* bottoni download nelle pagine plugin */
+.md-button {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-color: currentColor !important;
+}
+
+/* tabella parametri: colonna nome monospace */
+table td:first-child code {
+  font-size: 0.85em;
+}
+
+/* admonition: bordo sinistro grigio uniforme */
+.md-typeset .admonition,
+.md-typeset details {
+  border-color: #888888;
+}
+.md-typeset .admonition > .admonition-title,
+.md-typeset details > summary {
+  background-color: transparent;
 }
