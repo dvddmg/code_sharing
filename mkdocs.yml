@@ -89,6 +89,7 @@ extra_css:
 nav:
   - Home: index.md
   - Patchwork: patchwork/index.md
+  - Plugins: plugins.md
   - Blog: blog/index.md
   - Tag: tags/index.md
   - About: https://www.davidebardi.com/

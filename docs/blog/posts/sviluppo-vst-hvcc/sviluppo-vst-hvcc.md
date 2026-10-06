@@ -1,6 +1,7 @@
 ---
 date:
-  created: 2026-10-06
+  created: 2026-06-02
+  updated: 2026-10-06
 authors:
   - davide
 tags:
@@ -17,6 +18,8 @@ categories:
 # Sviluppo plugins in PureData con HVCC e DPF
 
 Un ambiente di sviluppo per trasformare patch PureData in plugin audio `VST3` per macOS, Windows e Linux.
+
+---------------------------------------------
 
 <!-- more -->
 
@@ -305,6 +308,6 @@ flowchart LR
 
 Con questa infrastruttura sono stati scritti i plugin `Orbita`, `Lontananza` e `Diffuser`.
 
-[Scarica l'ultima release](https://github.com/dvddmg/dev_plugin/releases/latest){ .md-button .md-button--primary }
+[Download](https://github.com/dvddmg/dev_plugin/releases/latest){ .md-button .md-button--primary }
 
 [^1]: Vedi il capitolo [Compilazione e cross compilazione](#compilazione-e-cross-compilazione) per dettagli su compatibilità e possibili errori.
