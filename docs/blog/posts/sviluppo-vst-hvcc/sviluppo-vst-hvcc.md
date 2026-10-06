@@ -16,189 +16,262 @@ categories:
 
 # Sviluppo plugins in PureData con HVCC e DPF
 
-Framework per creare pluging con PureData.
+Un ambiente di sviluppo per trasformare patch PureData in plugin audio `VST3` per macOS, Windows e Linux.
 
 <!-- more -->
 
 ## Introduzione
 
-Questo post mostra come è strutturata e funziona questa <a href="https://github.com/dvddmg/dev_plugin" target="_blank">repository</a> per lo sviluppo di **plugin** partendo da patch scritte in **PureData** o **PlugData**.
+Questo post descrive come è strutturata e come funziona la [repository dev_plugin](https://github.com/dvddmg/dev_plugin){target="_blank"}, pensata per sviluppare **plugin audio** partendo da patch scritte in **PureData** o **PlugData**.
 
-L'output finale sono tre plugin per la spazializzazione in formato `VST3`, disponibili per tutti e tre i sistemi operativi più diffusi: **macOS universal**, **Windows 64 bit** [^1], **Linux 64 bit** [^1].
+Il risultato finale sono tre plugin per la spazializzazione in formato `VST3`, disponibili per i tre sistemi operativi più diffusi: **macOS universal**, **Windows 64 bit**[^1] e **Linux 64 bit**[^1].
 
-I comandi per la compilazione e parte del codice `C++` sono stati sviluppati con l'ausilio di **Claude Code**. La parte teorica e di DSP è stata sviluppata personalmente.
+!!! note "Chi ha fatto cosa"
 
-Questo ambiente è stato scritto e testato su macOS facendo una cross compilazione con ambienti virtuali per Windows e Linux.
+    I comandi di compilazione e parte del codice `C++` sono stati sviluppati con l'aiuto di **Claude Code**. La parte teorica e il DSP sono stati sviluppati personalmente.
 
-[^1]: approfondire il capitolo [cross compilazione](#compilazione-e-cross-compilazione) per maggiori dettagli su compatibilità ed eventuali errori.
+L'ambiente è stato scritto e testato su **macOS**; le versioni per Windows e Linux sono ottenute tramite cross compilazione.
 
-## Obbeittivi
+## Obiettivi
 
-L'obbiettivo principale di questo ambiente di sviluppo è quello di creare facilmente dei plugin audio per DAW, nei formati disponbili. Lo stato dell'arte riporta grandi novità a riguardo; infatto l'ambiente che andrò a presentare non è from scratch, ma ha delle dipendenze importanti sopratutto per quanto riguardo la conversione della patch Pd in CPP per compilazione di `DSP` e `GUI`.
+L'obiettivo principale è creare facilmente plugin audio per DAW, nei vari formati disponibili. L'ambiente non è scritto da zero: si appoggia a progetti open source consolidati, soprattutto per la conversione della patch Pd in codice `C++` e per la compilazione di `DSP` e `GUI`.
+
+In sintesi, il percorso da patch a plugin è questo:
+
+```mermaid
+flowchart LR
+    P["patch .pd"] --> H{{"hvcc -g dpf"}}
+    J["plugin.json"] --> H
+    H --> C["codice C/C++<br/>+ wrapper DPF"]
+    C --> D{{"DPF (make)"}}
+    U["UI ImGui<br/>ui/ + common/"] --> D
+    D --> F["VST3 / CLAP / LV2"]
+```
 
 ## Framework
 
-L'ambiente di lavoro è strutturato come segue
+L'ambiente di lavoro è strutturato come segue:
 
-```bash
+```text
 .
 ├── README.md           // informazioni sull'ambiente
-├── config.sh           // file di configurazione (autore, percorsi dipendenze)
-├── new.sh              // comando per creare template nuovo plugin
-├── build.sh            // compilazione plugin
-├── dep                 // dipendenze e submodules
-├── src                 // codice sorgente e patch di tutti i plugin
-├── common              // codice C++ in comune (colori UI e funzioni grafiche)
-├── templates           // file di partenza nuovo plugin (*.pd, *.json, UI.cpp)
-├── docker              // file configurazione per la cross compilaizone in Linux
-└── venv                // virtual enviroment python
-├── requirements.txt    // registro di tutte le librerie contenute nel VENV python
-├── parse_max_pd        // studio conversione da Pd a Max.
+├── config.sh           // configurazione (autore, percorsi delle dipendenze)
+├── new.sh              // crea il template di un nuovo plugin
+├── build.sh            // compila i plugin
+├── requirements.txt    // librerie Python installate nel venv
+├── dep/                // dipendenze e submodule
+├── src/                // codice sorgente e patch di tutti i plugin
+├── common/             // codice C++ condiviso (colori UI e funzioni grafiche)
+├── templates/          // file di partenza di un nuovo plugin (*.pd, *.json, UI.cpp)
+├── docker/             // configurazione per la cross compilazione su Linux
+├── parse_max_pd/       // studio sulla conversione da Pd a Max
+└── venv/               // virtual environment Python
 ```
 
-Le dipendenze del progetto sono le seguenti:
+### Dipendenze
 
-- [Heavy Compiler Collection (hvcc)](https://github.com/Wasted-Audio/hvcc/tree/32483a8fd348e793be0bcbcedd626e6335c61a6c)
+- [Heavy Compiler Collection (hvcc)](https://github.com/Wasted-Audio/hvcc/tree/32483a8fd348e793be0bcbcedd626e6335c61a6c){target="_blank"}
 
-    `HVCC` è un compilatore basato su **Python** che genera codice **C/C++** e una varietà di wrapper specifici per framework audio. E' sviluppato per molte <a href="https://github.com/Wasted-Audio/hvcc/blob/develop/docs/getting-started/index.md#supported-platforms" target="_blank">piattaforme</a> e <a href="https://github.com/Wasted-Audio/hvcc/blob/develop/docs/getting-started/index.md#supported-frameworks" target="_blank">frameworks</a>.
-    Il concetto principale è che prende patch scritte con **PureData**[^2] e le compila per un determinato sistema operativo con il framework selezionato. Noi useremo `DPF` che permette di esportare plugin in formato `LV2`, `VST`, `VST3`, `CLAP` e `JACK`.
+    `hvcc` è un compilatore scritto in **Python** che genera codice **C/C++** e una serie di wrapper per diversi framework audio. Supporta molte [piattaforme](https://github.com/Wasted-Audio/hvcc/blob/develop/docs/getting-started/index.md#supported-platforms){target="_blank"} e [framework](https://github.com/Wasted-Audio/hvcc/blob/develop/docs/getting-started/index.md#supported-frameworks){target="_blank"}. Prende una patch **PureData** e la traduce in codice per il framework scelto: qui usiamo `DPF`, che esporta plugin nei formati `LV2`, `VST2`, `VST3`, `CLAP` e `JACK`.
 
-[^2]: **PlugData** viene distribuito con questo compilatore già incluso nel software. A primo impatto è molto utile ma limitato per una configurazione più precisa per grafica, dipedenze o altre necessità.
+- [DPF - DISTRHO Plugin Framework](https://github.com/DISTRHO/DPF/tree/4238e1c7f0351bbe488d79f0899c540543ac7583){target="_blank"}
 
-- [DPF - DISTRHO Plugin Framework](https://github.com/DISTRHO/DPF/tree/4238e1c7f0351bbe488d79f0899c540543ac7583)
+    `DPF` è il cuore del progetto: prende il codice generato da `hvcc` e lo compila nei formati elencati sopra. Fornisce anche un'interfaccia grafica di base, collegata al DSP in entrambe le direzioni tramite un'API `C++` basata su parametri.
 
-    `DPF` è il cuore del progetto, interpreta il codice tradotto da `hvcc` e lo compila in vari formati disponibili elencati sopra. Inoltre crea un'interfaccia grafica di base che viene collegata con la parte di DSP in entrambe le direzioni; questo collegamento avviene grazie ad una `API` in `C++` che lavora scambiando messaggi di `chiave - valore`.
+- [DPF Widgets](https://github.com/DISTRHO/DPF-Widgets){target="_blank"}
 
-- [DPF Widgets](https://github.com/DISTRHO/DPF-Widgets)
+    Raccolta di widget della community, utile per costruire `UI` personalizzate. È un submodule necessario alla compilazione.
 
-    Infine questa dipendenza può tornare utile per sviluppare `UI` personalizzate partendo da esempi pubblicati online all'interno di questa community. Rimane un submodule necessario per la compilazione e il progetto.
+Nella repository è inclusa anche la **Heavy Lib**, una collezione di abstraction per `Pd` scritte dagli autori di `hvcc`.
 
-Nella repository è anche inclusa la **Heavy Lib**, una collezione di abstraction per `Pd` scritte dagli autori di `hvcc`.
+!!! note "PlugData e hvcc"
 
-### HVCC e DPF
+    **PlugData** include già `hvcc` e permette di compilare direttamente dal software. È comodo per iniziare, ma limitato quando serve controllare in modo preciso grafica, dipendenze e opzioni di compilazione: per questo qui `hvcc` viene usato da terminale.
 
-Il primo step è creare il virtual enviroment con python, installare i `requirements.txt` e attivare il venv.
+!!! warning "Versioni fissate"
+
+    I link di `hvcc` e `DPF` puntano a commit precisi: sono le versioni con cui l'ambiente è stato testato. Aggiornare i submodule può rompere la compilazione o cambiare il codice generato.
+
+### Comunicazione tra UI e DSP
+
+Ogni parametro esposto nella patch diventa un parametro del plugin. `DPF` lo mantiene sincronizzato tra interfaccia grafica, DSP e DAW:
+
+```mermaid
+sequenceDiagram
+    participant UI as UI (ImGui)
+    participant DSP as DSP (Heavy)
+    participant DAW
+    UI->>DSP: setParameterValue() quando muovi un knob
+    DAW->>DSP: automazione del parametro
+    DSP-->>UI: parameterChanged() e la UI si aggiorna
+```
+
+## HVCC e DPF
+
+Il primo passo è creare il virtual environment Python, attivarlo e installare i `requirements.txt`:
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-source venv/bin/activate        // per disattivare lanciare il comando `deactivate`
+deactivate                      # per uscire dal venv quando hai finito
 ```
 
-Fatti questi primi step abbiamo a disposizione il comando `hvcc` all'interno del terminale. Questo comando ci permette di convertire una patch in codice C++. Ci sono diverse opzioni che possiamo passare a questo comando per personalizzare la compilazione. <a href="https://github.com/Wasted-Audio/hvcc/tree/32483a8fd348e793be0bcbcedd626e6335c61a6c#usage" target="_blank">comandi</a>.
-
-Il seguente comando indica le informazioni principali che servono a noi per questo progetto.
+A questo punto nel terminale è disponibile il comando `hvcc`, che converte una patch in codice C++. Le opzioni disponibili sono descritte nella [documentazione di hvcc](https://github.com/Wasted-Audio/hvcc/tree/32483a8fd348e793be0bcbcedd626e6335c61a6c#usage){target="_blank"}. Per questo progetto serve questo comando:
 
 ```bash
-hvcc plugin_name.pd -g dpf -m plugin.json -o /output/directory
+hvcc nome_plugin.pd -g dpf -m plugin.json -o /cartella/di/output
 ```
 
-Specifichiamo il nome della patch da compilare, il framwork utilizzato (`dpf`) e la cartella di output dove mettere il file compilato una volta terminato il processo. L'opzione `-m plugin.json` è una personalizzazione disponibile solo se compiliamo da terminale: permette di specificare delle impostazioni aggiuntive che sostiuiscono quelle di default inserite dagli sviluppato di `hvcc`. Il suo contenuto di base può essere il seguente:
+Indichiamo la patch da compilare, il framework (`-g dpf`) e la cartella di output. L'opzione `-m plugin.json` è disponibile solo compilando da terminale: permette di passare impostazioni che sostituiscono quelle di default di `hvcc`.
 
-```json
-{
-    "name": "@NAME@",          // nome plugin
-    "nosimd": true,            // Single Instruction, Multiple Data: isola problemi di compilazione
-    "dpf": {                   // opzioni di DPF
-        "dpf_path": "../../dep/",                   // percorso al submodule DPF
-        "enable_ui": true,                          // attiva la UI
-        "ui_size": {"width": 480, "height": 320},   // grandezza finestra
-        "description": "@DESCRIPTION@",             // descrizione
-        "maker": "@MAKER@",                         // sviluppatore
-        "brand_id": "@BRAND_ID@",                   // codice brand
-        "unique_id": "@UNIQUE_ID@",                 // codice univoco (4 cifre)
-        "homepage": "@HOMEPAGE@",                   // webpage
-        "plugin_uri": "@URI@",                      // webpage plugin
-        "version": "1, 0, 0",                       // versione
-        "license": "@LICENSE@",                     // licenza
-        "midi_input": 0,                            // input midi
-        "midi_output": 0,                           // output midi
-        "plugin_formats": @FORMATS@                 // array dei formati desiderati
+??? example "Template di `plugin.json`"
+
+    ```json
+    {
+        "name": "@NAME@",          // nome del plugin
+        "nosimd": true,            // disattiva le ottimizzazioni SIMD (evita problemi di compilazione)
+        "dpf": {                   // opzioni di DPF
+            "dpf_path": "../../dep/",                   // percorso del submodule DPF
+            "enable_ui": true,                          // attiva la UI
+            "ui_size": {"width": 480, "height": 320},   // dimensione della finestra
+            "description": "@DESCRIPTION@",             // descrizione
+            "maker": "@MAKER@",                         // sviluppatore
+            "brand_id": "@BRAND_ID@",                   // codice brand
+            "unique_id": "@UNIQUE_ID@",                 // codice univoco (4 caratteri)
+            "homepage": "@HOMEPAGE@",                   // sito web
+            "plugin_uri": "@URI@",                      // pagina web del plugin
+            "version": "1, 0, 0",                       // versione
+            "license": "@LICENSE@",                     // licenza
+            "midi_input": 0,                            // input MIDI
+            "midi_output": 0,                           // output MIDI
+            "plugin_formats": @FORMATS@                 // array dei formati desiderati
+        }
     }
-}
+    ```
+
+!!! warning "Niente commenti nel JSON reale"
+
+    I commenti `//` qui sopra servono solo a spiegare i campi: il JSON standard non li ammette, quindi il `plugin.json` vero deve esserne privo, altrimenti `hvcc` non riesce a leggerlo.
+
+!!! warning "`unique_id` deve essere davvero unico"
+
+    La DAW riconosce il plugin da `brand_id` e `unique_id`. Due plugin con lo stesso codice vanno in conflitto, e cambiarlo dopo la pubblicazione fa sì che le sessioni salvate non trovino più il plugin.
+
+### Creare un nuovo plugin
+
+Il ciclo di lavoro tipico è questo:
+
+```mermaid
+flowchart LR
+    N["./new.sh nome"] --> P["modifica la patch<br/>in Pd / PlugData"]
+    P --> B["./build.sh nome --install"]
+    B --> T["test nella DAW"]
+    T -- "iterazione" --> P
 ```
 
-Questo file viene copiato come default quando si crea un nuovo plugin. In particolare il comando `new.sh $NOME_PLUGIN` avvia un prompt che chiede tutte le informazioni necessarie tra cui il formato. Una volta completato dentro la cartella `/src` vediamo il tempalte base per il nuovo plugin con i file `.pd`, `.json` e la cartella `/ui` in cui vengono renderizzati i parametri con la palette e una disposizione automatica in forma di Knob (vedremo più avanti).
+Il comando `./new.sh <nome-plugin>` avvia un prompt che chiede tutte le informazioni necessarie, compresi i formati, e compila il template di `plugin.json` visto sopra. Al termine, in `src/` trovi il nuovo plugin con i file `.pd` e `.json` e la cartella `ui/`, dove i parametri vengono disegnati automaticamente come knob con la palette comune.
 
-![PureData template](./test-baisc-pd.png){width="100%" align=left}
+![PureData template](./test-baisc-pd.png){width="100%"}
+/// caption
+La patch di default generata da `new.sh`.
+///
 
-Un po' come i **MaxForLive**, vediamo qui soopra una patch di default già pronta per la compilazione. Possiamo aggiungere diversi parametri da esporre ad alto livello per il plugin come viene mostrato nell'immagine. Questo plugin è già pronto per essere compilato, lanciando il comando che segue possiamo vederene il risultato
+Un po' come in **Max for Live**, la patch di default è già pronta per la compilazione. Possiamo esporre al plugin altri parametri, come mostrato nell'immagine.
+
+!!! note "Esporre un parametro"
+
+    In `hvcc` un parametro si dichiara con un oggetto `receive` seguito da `@hv_param`, il valore minimo, il massimo e quello di default, per esempio `[r gain @hv_param 0 1 0.5]`. Tutti i dettagli sono nella [documentazione di hvcc](https://wasted-audio.github.io/hvcc/latest/getting-started/patching/#exposing-parameters){target="_blank"}.
+
+!!! warning "Solo oggetti supportati da Heavy"
+
+    `hvcc` supporta solo un sottoinsieme degli oggetti di Pd vanilla e nessun external. Se la patch usa un oggetto non supportato, la compilazione si interrompe: conviene controllare l'elenco degli oggetti supportati prima di scrivere patch complesse.
+
+Il plugin è già compilabile. Con questo comando vediamo il risultato:
 
 ```bash
 ./build.sh test-basic --install
 ```
 
-L'opzione `--install` mette in autoamtico il plugin all'interno della cartella specificata nel file `config.sh`.
+L'opzione `--install` copia automaticamente il plugin nella cartella indicata in `config.sh`.
 
-![VST3 template](./test-basic-vst3.png){width="100%" align=left}
+![VST3 template](./test-basic-vst3.png){width="100%"}
+/// caption
+Il plugin appena compilato, aperto nella DAW.
+///
 
-Così è come appare il plugin appena compilato. <a href="https://wasted-audio.github.io/hvcc/latest/getting-started/patching/#exposing-parameters" target="_blank">Qui</a> c'è la documentazion di `hvcc` per la definizione di altri parametri. La documentazione approfondisce anche maggiormente come viene creata l'interfaccia grafica, per questo progetto è stata utilizzata l'API di <a href="https://github.com/ocornut/imgui" target="_blank">ImGui</a>.  E' un sistema interessante che ci permette facilmente di inserire variabili di vario tipo in breve tempo. facendo le seguenti modifiche al plugin `test-basic` otteniamo un'altro tipo di interfaccia.
+### Personalizzare l'interfaccia
 
-![PureData template 2](./test-basic-pd-2.0.png){width="100%" align=left}
+L'interfaccia grafica usa l'API di [ImGui](https://github.com/ocornut/imgui){target="_blank"}, che permette di aggiungere controlli di vario tipo in poco tempo. Modificando il plugin `test-basic` come segue otteniamo un'interfaccia diversa:
 
-File **`./src/test-basic/plugin.json`**
+![PureData template 2](./test-basic-pd-2.0.png){width="100%"}
+/// caption
+La patch con il nuovo parametro `mode`.
+///
 
-```json
-{
-    "name": "test_basic",
-    "nosimd": true,
-    "dpf": {
-        //...
-        "enumerators": {
-            "mode": ["0", "1723", "848"]
+=== "src/test-basic/plugin.json"
+
+    ```json
+    {
+        "name": "test_basic",
+        "nosimd": true,
+        "dpf": {
+            //...
+            "enumerators": {
+                "mode": ["0", "1723", "848"]
+            }
         }
     }
-}
-```
+    ```
 
-File **`./src/test-basic/ui/HeavyDPF_test_basic_UI.cpp`**
+=== "src/test-basic/ui/HeavyDPF_test_basic_UI.cpp"
 
-```cpp
-#include "PluginUIBase.hpp"
+    ```cpp
+    #include "PluginUIBase.hpp"
 
-START_NAMESPACE_DISTRHO
+    START_NAMESPACE_DISTRHO
 
-class PluginUI : public PluginUIBase
-{
-protected:
-    void drawContent() override
+    class PluginUI : public PluginUIBase
     {
-        const float pad   = kPad * fZ;
-        const float width = getWidth() - 2.0f * pad;
+    protected:
+        void drawContent() override
+        {
+            const float pad   = kPad * fZ;
+            const float width = getWidth() - 2.0f * pad;
 
-        ImGui::SetCursorPos(ImVec2(pad, pad));
-        drawTitle("test-basic", "test e info");
+            ImGui::SetCursorPos(ImVec2(pad, pad));
+            drawTitle("test-basic", "test e info");
 
-        ImGui::SetCursorPosX(pad);
-        sectionHeader("PARAMETERS", width);
+            ImGui::SetCursorPosX(pad);
+            sectionHeader("PARAMETERS", width);
 
-        ImGui::SetCursorPosX(pad);
-        static const char* const modeItems[] = { "uno", "due", "tre" };
+            ImGui::SetCursorPosX(pad);
+            static const char* const modeItems[] = { "uno", "due", "tre" };
+            comboParam("mode", parammode, modeItems, 3, 140.0f * fZ);
 
-        ImGui::SetCursorPosX(pad);
-        comboParam("mode", parammode, modeItems, 3, 140.0f * fZ);
+            ImGui::SetCursorPosX(pad);
+            knobParam("gain", paramgain, 0.0f, 1.0f, "%.2f");
+        }
+    };
 
-        ImGui::SetCursorPosX(pad);
-        knobParam("gain", paramgain, 0.0f, 1.0f, "%.2f");
+    UI* createUI()
+    {
+        return new PluginUI();
     }
-};
 
-UI* createUI()
-{
-    return new PluginUI();
-}
+    END_NAMESPACE_DISTRHO
+    ```
 
-END_NAMESPACE_DISTRHO
-```
+Il risultato è questo:
 
-Queste modifiche portano al seguente risultato
+![VST3 template 2](./test-basic-vst3-2.0.png){width="100%"}
+/// caption
+La nuova interfaccia con il menu `mode` e il knob `gain`.
+///
 
-![Vst3 template 2](./test-basic-vst3-2.0.png){width="100%" align=left}
+## Compilazione e cross compilazione
 
-### Compilazione e Cross compilazione
-
-Per compilare abbiamo a disposizione il comando `./build.sh <nome-plugin> |opzioni|` che con diverse opzioni ci permette di compilare il nostro plugin.
+Per compilare si usa `./build.sh <nome-plugin> [opzioni]`:
 
 | Opzione | Cosa fa |
 |---|---|
@@ -210,11 +283,28 @@ Per compilare abbiamo a disposizione il comando `./build.sh <nome-plugin> |opzio
 | `--install` | copia il bundle nella cartella VST3 indicata in `config.sh` |
 | `--clean` | cancella `build*` e `bin` del plugin prima di compilare |
 
-- L'opzione `--wind` ha la dipendenza da `mingw-w64` che è possibile installare con `brew`. Un terminale windows che viene avviato dal comando `build` se specificato come opzione.
-- L'opzione `--linux` richiede l'avvio di `Docker` su cui avviamo sempre tramito comando un ambiente virtuale Linux.
+```mermaid
+flowchart LR
+    B["./build.sh nome"] --> N["--native<br/>sistema corrente"]
+    B --> U["--universal<br/>arm64 + x86_64"]
+    B --> W["--win<br/>MinGW-w64"]
+    B --> L["--linux<br/>container Docker"]
+    U & W & L --> A["--all<br/>bundle VST3 unico"]
+```
+
+!!! warning "Requisiti per la cross compilazione da macOS"
+
+    - `--win` richiede `mingw-w64`, installabile con `brew install mingw-w64`.
+    - `--linux` richiede **Docker** avviato: lo script crea al volo un ambiente Linux virtuale e compila al suo interno.
+
+!!! warning "Windows e Linux: testati da macOS"
+
+    Le build per Windows e Linux sono prodotte da macOS tramite cross compilazione. Prima di distribuirle conviene provarle su macchine reali: compilare senza errori non garantisce che il plugin si carichi correttamente in ogni DAW.
 
 ## Output
 
-Con questa infrastruttura sono stati scritti i plugin `Orbita`, `Lontananza` e `Diffuser`. 
+Con questa infrastruttura sono stati scritti i plugin `Orbita`, `Lontananza` e `Diffuser`.
 
-[DOWNLOAD](https://github.com/dvddmg/dev_plugin/releases/latest)
+[Scarica l'ultima release](https://github.com/dvddmg/dev_plugin/releases/latest){ .md-button .md-button--primary }
+
+[^1]: Vedi il capitolo [Compilazione e cross compilazione](#compilazione-e-cross-compilazione) per dettagli su compatibilità e possibili errori.
