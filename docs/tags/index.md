@@ -1,5 +1,3 @@
-# Tag
-
-Tutti i post organizzati per tag.
+# Tags
 
 [TAGS]

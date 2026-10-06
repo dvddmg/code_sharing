@@ -14,13 +14,13 @@ theme:
       accent: custom
       toggle:
         icon: material/brightness-7
-        name: Passa al tema scuro
+        name: Change to dark
     - scheme: slate
       primary: custom
       accent: custom
       toggle:
         icon: material/brightness-4
-        name: Passa al tema chiaro
+        name: Change to light
 
   features:
     - navigation.tabs           # tabs in alto
@@ -28,6 +28,7 @@ theme:
     - navigation.top            # bottone "torna su"
     - content.code.copy         # bottone copia nei code block
     - content.tabs.link         # tabs sincronizzati
+    - content.footnote.tooltips
   icon:
     repo: fontawesome/brands/github
   font:
@@ -37,8 +38,8 @@ theme:
 
 # ---------- PLUGIN ----------
 plugins:
-  - search
-
+  - search   
+  - glightbox
   - blog:
       blog_dir: blog                    # cartella del blog dentro docs/
       blog_toc: true                    # table of contents nei post
@@ -60,6 +61,7 @@ plugins:
 
 # estensioni markdown
 markdown_extensions:
+  - footnotes
   - admonition                  # box note/warning/tip
   - pymdownx.details            # admonition richiudibili
   - pymdownx.superfences:
@@ -73,6 +75,7 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.inlinehilite       # inline code highlighting
   - attr_list                   # attributi su elementi
+  - pymdownx.blocks.caption
   - md_in_html                  # markdown dentro html
   - tables                      # tabelle
   - toc:                        # table of contents
@@ -85,6 +88,7 @@ extra_css:
 # ---------- NAVIGAZIONE ----------
 nav:
   - Home: index.md
+  - Patchwork: patchwork/index.md
   - Blog: blog/index.md
   - Tag: tags/index.md
   - About: https://www.davidebardi.com/
