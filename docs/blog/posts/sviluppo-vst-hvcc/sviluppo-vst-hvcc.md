@@ -30,7 +30,7 @@ I comandi per la compilazione e parte del codice `C++` sono stati sviluppati con
 
 Questo ambiente è stato scritto e testato su macOS facendo una cross compilazione con ambienti virtuali per Windows e Linux.
 
-[^1]: approfondire il capitolo [cross compilazione](#cross-compilazione) per maggiori dettagli su compatibilità ed eventuali errori.
+[^1]: approfondire il capitolo [cross compilazione](#compilazione-e-cross-compilazione) per maggiori dettagli su compatibilità ed eventuali errori.
 
 ## Obbeittivi
 
